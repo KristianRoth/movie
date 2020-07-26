@@ -1,0 +1,31 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: movies
+
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8080
+  
+  movie-service:
+    image: gradle:jdk11
+    ports:
+      - "8080:8080"
+    volumes: 
+      - ./:/app
+    working_dir: /app
+    command: sh run.sh
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/movies
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - db
