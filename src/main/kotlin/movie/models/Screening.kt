@@ -2,12 +2,13 @@ package movie.models
 
 import javax.persistence.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 
 @Entity
-@Table(name = "sreenings")
+@Table(name = "screenings")
 @JsonRootName("screening")
 class Screening(
     val movieName: String,
@@ -20,7 +21,6 @@ class Screening(
     )
     val auditorium: Auditorium
 ) {
-
 
     @JsonBackReference
     @OneToMany(
@@ -42,20 +42,28 @@ class Screening(
 }
 
 @Entity
-@Table(name = "resevations")
 @JsonRootName("resevation")
+@Table(
+    name = "resevations",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["screening_id", "seat_id"])]
+)
 class Resevation(
     @JsonManagedReference
     @ManyToOne(
         name = "screening_id",
+        cascade = [(CascadeType.NONE)],
         fetch = FetchType.Lazy
     )
     val screening: Screening,
-    @OneToOne(name = "seat_id")
+    @OneToOne(
+        name = "seat_id",
+        cascade = [(CascadeType.ALL)]
+    )
     val seat: Seat
 ) { 
     @Id
     @GeneratedValue(stretegy = GenerationType.AUTO)
     val id: Int = 0
-
+    val serial: String = this.screening.startTime.format(DateTimeFormatter.ofPattern("ddMMyyyy"))+this.screening.id+this.seat.seatNumber
 }
+

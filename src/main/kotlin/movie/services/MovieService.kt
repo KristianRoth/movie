@@ -31,11 +31,14 @@ class MovieService @Autowired constructor (
         return auditorium?.seats
     }
 
-    fun createScreening(name: String, auditoriumId: Int): Screening {
-        val auditorium = auditoriumRepository.getOne(auditoriumId)
-        val screening: Screening = Screening(name, LocalDateTime.now(), LocalDateTime.now(), auditorium)
-        screeningRepository.save(screening)
-        return screening 
+    fun createScreening(auditoriumId: Int, name: String, startTime: LocalDateTime, endTime: LocalDateTime): Screening? {
+        val auditorium = auditoriumRepository.findById(auditoriumId).orElse(null)
+        auditorium?.let {
+            val screening: Screening = Screening(name, startTime, endTime, it)
+            screeningRepository.save(screening)
+            return screening
+        }
+        return null
     }
 
     fun getScreening(id: Int): Screening? {
@@ -65,14 +68,21 @@ class MovieService @Autowired constructor (
         return screenings(startTime, endTime)
     }
 
-    fun createResevation(screeningId: Int, seatId: Int): Resevation? {
-        val screening: Screening? = screeningRepository.getOne(screeningId)
-        val seat: Seat? = seatRepository.getOne(seatId)
-        //TODO: make sure that screening and seat exist and seat is in the correct screening
-        val resevation = Resevation(screening!!, seat!!)
-        screening!!.addResevation(resevation)
-        screeningRepository.save(screening)
-        return resevation
+    fun createResevation(screeningId: Int, seatId: Int): Resevation {
+        val screening: Screening? = screeningRepository.findById(screeningId).orElse(null)
+        val seat: Seat? = seatRepository.findById(seatId).orElse(null)
+        screening?.let { screening ->
+            seat?.let { seat -> 
+                if (screening.auditorium != seat.auditorium) {
+                    throw SeatNotInAuditoriumException("Seat with id ${seatId} is not in screening with id ${screeningId}")
+                }
+                val resevation = Resevation(screening, seat)
+                screening.addResevation(resevation)
+                resevationRepository.save(resevation)
+                return resevation
+            }
+        }
+        throw NotFoundException("Screening with id ${screeningId} or seat with id ${seatId} not found")
     }
 
     fun getResevations(screeningId: Int): List<Resevation>? {
@@ -83,3 +93,6 @@ class MovieService @Autowired constructor (
         return null
     }
 }
+
+class NotFoundException(message: String?): Exception(message)
+class SeatNotInAuditoriumException(message: String?): Exception(message)

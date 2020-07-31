@@ -2,6 +2,8 @@ package movie.models
 
 import javax.persistence.*
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 
 
 @Entity
@@ -16,13 +18,13 @@ class Auditorium(
 
     @JsonIgnore
     @OneToMany(
-        fetch = fetchType.EAGER,
+        fetch = fetchType.Lazy,
         cascade = [(CascadeType.ALL)]
     )
     var seats: List<Seat> = ArrayList()
 
     fun addSeats(amount: Int) {
-        for (i in 1..amount ) seats += Seat(i)
+        for (i in 1..amount ) seats += Seat(i, this)
     } 
 
 }
@@ -32,7 +34,13 @@ class Auditorium(
 @Entity
 @Table(name = "seats")
 class Seat(
-    val seatNumber: Int
+    val seatNumber: Int,
+    @JsonIgnore
+    @ManyToOne(
+        name = "auditorium_id",
+        fetch = FetchType.Lazy
+    )
+    val auditorium: Auditorium
 ) { 
     @Id
     @GeneratedValue(stretegy = GenerationType.AUTO)
