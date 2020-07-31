@@ -5,8 +5,6 @@ import movie.models.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.ResponseEntity
-import org.springframework.http.HttpStatus
-import org.springframework.web.server.ResponseStatusException
 
 
 @RestController
@@ -27,28 +25,14 @@ class AuditoriumController @Autowired constructor(
      fun getAuditorium(
           @PathVariable(value = "auditoriumId") auditoriumId: Int
      ): ResponseEntity<Auditorium> {
-          movieService.getAuditorium(auditoriumId)?.let {
-               return ResponseEntity.ok(it)
-          }?: run {
-               throw ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Auditorium with id ${auditoriumId} not found"
-               )
-          }
+          return ResponseEntity.ok(movieService.getAuditorium(auditoriumId))
      }
 
      @GetMapping("/{auditoriumId}/seats", produces = ["application/json"])
      fun getSeats(
           @PathVariable(value = "auditoriumId") auditoriumId: Int
      ): ResponseEntity<List<Seat>> {
-          movieService.getSeats(auditoriumId)?.let {
-               return ResponseEntity.ok(it)
-          }?: run {
-               throw ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Auditorium with id ${auditoriumId} not found"
-               )
-          }
+          return ResponseEntity.ok(movieService.getSeats(auditoriumId))   
      }
 
 }

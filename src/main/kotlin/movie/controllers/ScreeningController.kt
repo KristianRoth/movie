@@ -5,8 +5,6 @@ import movie.models.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.ResponseEntity
-import org.springframework.http.HttpStatus
-import org.springframework.web.server.ResponseStatusException
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
 
@@ -27,28 +25,7 @@ class ScreeningController @Autowired constructor(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         endTime: LocalDateTime
     ): ResponseEntity<Screening> {
-        movieService.createScreening(auditoriumId, name, startTime, endTime)?.let {
-            return ResponseEntity.ok(it)
-        }?:run {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Auditorium with id ${auditoriumId} not found"
-            )
-        }
-    }
-
-    @GetMapping("/{screeningId}")
-    fun getScreening(
-        @PathVariable(value = "screeningId") screeningId: Int
-    ): ResponseEntity<Screening> {
-        movieService.getScreening(screeningId)?.let {
-            return ResponseEntity.ok(it)
-        }?:run {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Screening with id ${screeningId} not found"
-            )
-        }
+        return ResponseEntity.ok(movieService.createScreening(auditoriumId, name, startTime, endTime))
     }
 
     @GetMapping("", produces = ["application/json"])
@@ -64,20 +41,19 @@ class ScreeningController @Autowired constructor(
         return ResponseEntity.ok(movieService.getScreenings(startTime, endTime, upComing))
     }
 
+    @GetMapping("/{screeningId}")
+    fun getScreening(
+        @PathVariable(value = "screeningId") screeningId: Int
+    ): ResponseEntity<Screening> {
+        return ResponseEntity.ok(movieService.getScreening(screeningId))
+    }
+
     @GetMapping("/{screeningId}/resevations/make")
     fun createResevation(
         @PathVariable("screeningId") screeningId: Int,
         @RequestParam(value = "seatId", required = true) seatId: Int
     ): ResponseEntity<Resevation> {
-        try {
-            return ResponseEntity.ok(movieService.createResevation(screeningId, seatId))
-        } catch (e: Exception) {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, 
-                e.message,
-                e
-            );
-        }
+        return ResponseEntity.ok(movieService.createResevation(screeningId, seatId))
     }
 
 
@@ -85,13 +61,6 @@ class ScreeningController @Autowired constructor(
     fun getResevations(
         @PathVariable(value = "screeningId") screeningId: Int
     ): ResponseEntity<List<Resevation>> {
-        movieService.getResevations(screeningId)?.let {
-            return ResponseEntity.ok(it)
-        }?:run {
-            throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, 
-                "Screening with id ${screeningId} not found"
-            );
-        }
+        return ResponseEntity.ok(movieService.getResevations(screeningId))
     }
 }
