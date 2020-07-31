@@ -1,6 +1,7 @@
 package movie.models
 
 import javax.persistence.*
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 
 @Entity
@@ -13,6 +14,7 @@ class Auditorium(
     @GeneratedValue(stretegy = GenerationType.AUTO)
     val id: Int = 0
 
+    @JsonIgnore
     @OneToMany(
         fetch = fetchType.EAGER,
         cascade = [(CascadeType.ALL)]

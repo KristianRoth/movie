@@ -1,11 +1,9 @@
 package movie.repository
 
-import movie.models.Auditorium
-import movie.models.Seat
-import movie.models.Screening
-import movie.models.Resevation
+import movie.models.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
  
 
 @Repository
@@ -21,7 +19,9 @@ interface SeatRepository: JpaRepository<Seat, Int> {
 
 @Repository
 interface ScreeningRepository: JpaRepository<Screening, Int> {
-
+    fun findByStartTimeBetween(startTime: LocalDateTime, endTime: LocalDateTime): List<Screening>
+    fun findByStartTimeGreaterThan(startTime: LocalDateTime): List<Screening>
+    fun findByStartTimeLessThan(startTime: LocalDateTime): List<Screening>
 }
 
 @Repository

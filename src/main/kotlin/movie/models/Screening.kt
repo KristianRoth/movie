@@ -1,7 +1,7 @@
 package movie.models
 
 import javax.persistence.*
-import java.util.Date
+import java.time.LocalDateTime
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 @JsonRootName("screening")
 class Screening(
     val movieName: String,
-    val startTime: Date,
-    val endTime: Date,
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime,
     @OneToOne(
         name = "auditorium_id",
         cascade = [(CascadeType.ALL)],
@@ -43,6 +43,7 @@ class Screening(
 
 @Entity
 @Table(name = "resevations")
+@JsonRootName("resevation")
 class Resevation(
     @JsonManagedReference
     @ManyToOne(

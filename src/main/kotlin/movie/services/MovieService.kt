@@ -4,8 +4,7 @@ import movie.repository.*
 import movie.models.*
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Autowired
-import javax.persistence.EntityManager
-import java.util.Date
+import java.time.LocalDateTime
 
 @Service
 class MovieService @Autowired constructor (
@@ -31,15 +30,36 @@ class MovieService @Autowired constructor (
 
     fun createScreening(name: String, auditoriumId: Int): Screening {
         val auditorium = auditoriumRepository.getOne(auditoriumId)
-        val screening: Screening = Screening(name, Date(), Date(), auditorium)
+        val screening: Screening = Screening(name, LocalDateTime.now(), LocalDateTime.now(), auditorium)
         screeningRepository.save(screening)
         return screening 
     }
 
     fun getScreening(id: Int): Screening? {
-        val s: Screening? = screeningRepository.findById(id).orElse(null)
-        println(s!!.id)
-        return s
+        return screeningRepository.findById(id).orElse(null)
+    }
+
+    fun getScreenings(startTime: LocalDateTime?, endTime: LocalDateTime?, upComing: Boolean?): List<Screening> {
+        fun screenings(startTime: LocalDateTime?, endTime: LocalDateTime?): List<Screening> {
+            endTime ?.let { endTime ->
+                startTime ?. let { startTime ->
+                    return screeningRepository.findByStartTimeBetween(startTime, endTime)
+                } ?: run {
+                    return screeningRepository.findByStartTimeLessThan(endTime)
+                }
+            } ?: run {
+                startTime ?. let{ startTime -> 
+                    return screeningRepository.findByStartTimeGreaterThan(startTime)
+                } ?: run {
+                    return screeningRepository.findAll()
+                }
+            }
+        }
+        
+        if (upComing ?: false) {
+            return screenings(LocalDateTime.now(), endTime)
+        } 
+        return screenings(startTime, endTime)
     }
 
     fun createResevation(screeningId: Int, seatId: Int): Resevation? {
@@ -52,8 +72,11 @@ class MovieService @Autowired constructor (
         return resevation
     }
 
-    fun getResevations(screeningId: Int): List<Resevation> {
-        val screening: Screening = screeningRepository.getOne(screeningId)!!
-        return screening.resevations
+    fun getResevations(screeningId: Int): List<Resevation>? {
+        val screening: Screening? = screeningRepository.findById(screeningId).orElse(null)
+        return screening?.let { screening ->
+            return screening.resevations
+        }
+        return null
     }
 }
