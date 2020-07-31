@@ -14,18 +14,21 @@ class MovieService @Autowired constructor (
     private val resevationRepository: ResevationRepository
 ) {
 
-    fun createAuditorium(name: String): String {
+    fun createAuditorium(name: String, numberOfSeats: Int): Auditorium {
         val auditorium = Auditorium(name)
-        
-        auditorium.addSeats(10)
-        auditoriumRepository.save(auditorium)
-    
-        return "OK"
-    }
 
+        auditorium.addSeats(numberOfSeats)
+        auditoriumRepository.save(auditorium)
+        return auditorium
+    }
 
     fun getAuditorium(id: Int): Auditorium? {
         return auditoriumRepository.findById(id).orElse(null)
+    }
+
+    fun getSeats(auditoriumId: Int): List<Seat>? {
+        val auditorium: Auditorium? = auditoriumRepository.findById(auditoriumId).orElse(null)
+        return auditorium?.seats
     }
 
     fun createScreening(name: String, auditoriumId: Int): Screening {
