@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity
 class AuditoriumController @Autowired constructor(
      private val movieService: MovieService
 ) {
-     @GetMapping("/make", produces = ["application("])
+     @PostMapping("/make", produces = ["application/json"])
      fun make(
           @RequestParam(value = "auditoriumName", required = true) auditoriumName: String,
           @RequestParam(value = "numberOfSeats", required = true) numberOfSeats: Int
@@ -33,5 +33,4 @@ class AuditoriumController @Autowired constructor(
      ): ResponseEntity<List<Seat>> {
           return ResponseEntity.ok(movieService.getSeats(auditoriumId))   
      }
-
 }

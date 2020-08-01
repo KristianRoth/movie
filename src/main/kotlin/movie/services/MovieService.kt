@@ -90,6 +90,17 @@ class MovieService @Autowired constructor (
                         .orElseThrow{ NotFoundException("Screening with id ${screeningId} not found") }
     }
 
+    fun getScreeningSeats(screeningId: Int, getReserved: Boolean): List<Seat> {
+        val screening: Screening = screeningRepository
+                        .findById(screeningId)
+                        .orElseThrow{ NotFoundException("Screening with id ${screeningId} not found") }
+
+        val seats: List<Seat> = screening.auditorium.seats
+        val resevations: List<Seat> = screening.resevations.map{it.seat}
+
+        return seats.filter { (getReserved == resevations.contains(it)) }
+    }
+
     fun createResevation(screeningId: Int, seatId: Int): Resevation {
         val screening: Screening = screeningRepository
                         .findById(screeningId)

@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class ScreeningController @Autowired constructor(
      private val movieService: MovieService
 ) {
-    @GetMapping("/make", produces = ["application/json"])
+    @PostMapping("/make", produces = ["application/json"])
     fun createScreening(
         @RequestParam(value = "auditoriumId", required = true) auditoriumId: Int,
         @RequestParam(value = "name", required = true) name: String,
@@ -48,7 +48,15 @@ class ScreeningController @Autowired constructor(
         return ResponseEntity.ok(movieService.getScreening(screeningId))
     }
 
-    @GetMapping("/{screeningId}/resevations/make", produces = ["application/json"])
+    @GetMapping("/{screeningId}/seats", produces = ["application/json"])
+    fun getSeats(
+        @PathVariable(value = "screeningId") screeningId: Int,
+        @RequestParam(value = "getReserved") getReserved: Boolean?
+    ): ResponseEntity<List<Seat>> {
+        return ResponseEntity.ok(movieService.getScreeningSeats(screeningId, (getReserved ?: false)))
+    }
+
+    @PostMapping("/{screeningId}/resevations/make", produces = ["application/json"])
     fun createResevation(
         @PathVariable("screeningId") screeningId: Int,
         @RequestParam(value = "seatId", required = true) seatId: Int
