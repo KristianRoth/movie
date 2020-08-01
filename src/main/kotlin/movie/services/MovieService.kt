@@ -16,6 +16,10 @@ class MovieService @Autowired constructor (
     private val resevationRepository: ResevationRepository
 ) {
 
+    fun getAuditoriums(): List<Auditorium> {
+        return auditoriumRepository.findAll()
+    }
+
     fun createAuditorium(name: String, numberOfSeats: Int): Auditorium {
         val auditorium = Auditorium(name)
 
@@ -101,22 +105,28 @@ class MovieService @Autowired constructor (
         return seats.filter { (getReserved == resevations.contains(it)) }
     }
 
-    fun createResevation(screeningId: Int, seatId: Int): Resevation {
+    fun createResevation(screeningId: Int, seatIds: List<Int>): List<Resevation> {
         val screening: Screening = screeningRepository
                         .findById(screeningId)
                         .orElseThrow{ NotFoundException("Screening with id ${screeningId} not found") }
-        val seat: Seat = seatRepository
+        val seats: List<Seat> = seatIds.map { seatId -> 
+                    seatRepository
                         .findById(seatId)
                         .orElseThrow{ NotFoundException("Seat with id ${seatId} not found") }
-        
-
-        if (screening.auditorium != seat.auditorium) {
-            throw SeatNotInAuditoriumException("Seat with id ${seatId} is not in screening with id ${screeningId}")
         }
-        val resevation = Resevation(screening, seat)
-        screening.addResevation(resevation)
-        resevationRepository.save(resevation)
-        return resevation
+
+        seats.forEach { seat -> 
+            if (screening.auditorium != seat.auditorium) {
+                throw SeatNotInAuditoriumException("Seat with id ${seat.id} is not in screening with id ${screeningId}")
+            }
+        }
+
+        return seats.map { seat ->
+            val resevation = Resevation(screening, seat)
+            screening.addResevation(resevation)
+            resevationRepository.save(resevation)
+            resevation
+        }
 
     }
 

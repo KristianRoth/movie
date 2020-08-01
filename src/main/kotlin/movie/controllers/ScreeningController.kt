@@ -14,19 +14,6 @@ import java.time.LocalDateTime
 class ScreeningController @Autowired constructor(
      private val movieService: MovieService
 ) {
-    @PostMapping("/make", produces = ["application/json"])
-    fun createScreening(
-        @RequestParam(value = "auditoriumId", required = true) auditoriumId: Int,
-        @RequestParam(value = "name", required = true) name: String,
-        @RequestParam(value = "startTime", required = true) 
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        startTime: LocalDateTime,
-        @RequestParam(value = "endTime", required = true) 
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        endTime: LocalDateTime
-    ): ResponseEntity<Screening> {
-        return ResponseEntity.ok(movieService.createScreening(auditoriumId, name, startTime, endTime))
-    }
 
     @GetMapping("", produces = ["application/json"])
     fun getScreenings(
@@ -39,6 +26,20 @@ class ScreeningController @Autowired constructor(
         @RequestParam(value = "upComing", required = false) upComing: Boolean?
     ): ResponseEntity<List<Screening>> {
         return ResponseEntity.ok(movieService.getScreenings(startTime, endTime, upComing))
+    }
+
+    @PostMapping("/make", produces = ["application/json"])
+    fun createScreening(
+        @RequestParam(value = "auditoriumId", required = true) auditoriumId: Int,
+        @RequestParam(value = "name", required = true) name: String,
+        @RequestParam(value = "startTime", required = true) 
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        startTime: LocalDateTime,
+        @RequestParam(value = "endTime", required = true) 
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        endTime: LocalDateTime
+    ): ResponseEntity<Screening> {
+        return ResponseEntity.ok(movieService.createScreening(auditoriumId, name, startTime, endTime))
     }
 
     @GetMapping("/{screeningId}", produces = ["application/json"])
@@ -56,18 +57,18 @@ class ScreeningController @Autowired constructor(
         return ResponseEntity.ok(movieService.getScreeningSeats(screeningId, (getReserved ?: false)))
     }
 
-    @PostMapping("/{screeningId}/resevations/make", produces = ["application/json"])
-    fun createResevation(
-        @PathVariable("screeningId") screeningId: Int,
-        @RequestParam(value = "seatId", required = true) seatId: Int
-    ): ResponseEntity<Resevation> {
-        return ResponseEntity.ok(movieService.createResevation(screeningId, seatId))
-    }
-
     @GetMapping("/{screeningId}/resevations", produces = ["application/json"])
     fun getResevations(
         @PathVariable(value = "screeningId") screeningId: Int
     ): ResponseEntity<List<Resevation>> {
         return ResponseEntity.ok(movieService.getResevations(screeningId))
+    }
+
+    @PostMapping("/{screeningId}/resevations/make", produces = ["application/json"])
+    fun createResevation(
+        @PathVariable("screeningId") screeningId: Int,
+        @RequestParam(value = "seatIds", required = true) seatIds: List<Int>
+    ): ResponseEntity<List<Resevation>> {
+        return ResponseEntity.ok(movieService.createResevation(screeningId, seatIds))
     }
 }

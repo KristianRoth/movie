@@ -45,7 +45,7 @@ class Screening(
 @JsonRootName("resevation")
 @Table(
     name = "resevations",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["screening_id", "seat_id"])]
+    uniqueConstraints = [UniqueConstraint(columnNames = ["screening_id", "seat_id"], name = "unique seat in screening constraint")]
 )
 class Resevation(
     @JsonManagedReference
