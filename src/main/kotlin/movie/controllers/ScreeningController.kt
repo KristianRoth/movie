@@ -41,21 +41,20 @@ class ScreeningController @Autowired constructor(
         return ResponseEntity.ok(movieService.getScreenings(startTime, endTime, upComing))
     }
 
-    @GetMapping("/{screeningId}")
+    @GetMapping("/{screeningId}", produces = ["application/json"])
     fun getScreening(
         @PathVariable(value = "screeningId") screeningId: Int
     ): ResponseEntity<Screening> {
         return ResponseEntity.ok(movieService.getScreening(screeningId))
     }
 
-    @GetMapping("/{screeningId}/resevations/make")
+    @GetMapping("/{screeningId}/resevations/make", produces = ["application/json"])
     fun createResevation(
         @PathVariable("screeningId") screeningId: Int,
         @RequestParam(value = "seatId", required = true) seatId: Int
     ): ResponseEntity<Resevation> {
         return ResponseEntity.ok(movieService.createResevation(screeningId, seatId))
     }
-
 
     @GetMapping("/{screeningId}/resevations", produces = ["application/json"])
     fun getResevations(

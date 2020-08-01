@@ -47,6 +47,15 @@ class MovieService @Autowired constructor (
             throw EndTimeIsEarlierThanStartTimeException("Starting time cant be earlier than ending time")
         }
 
+        val overlapping: List<Screening> = screeningRepository.findOverlappingScreenings(auditorium, startTime, endTime)
+        if (!overlapping.isEmpty()) {
+            var err: String = "There is overlap in auditorium with id ${auditoriumId}"
+            overlapping.forEach {
+                err += " with screening with id ${it.id}"
+            }
+            throw OverLappingScreeningsException(err)
+        }
+
         val screening: Screening = Screening(name, startTime, endTime, auditorium)
         screeningRepository.save(screening)
         return screening
@@ -111,4 +120,4 @@ class MovieService @Autowired constructor (
 class NotFoundException(message: String?): ResponseStatusException(HttpStatus.NOT_FOUND, message)
 class SeatNotInAuditoriumException(message: String?): ResponseStatusException(HttpStatus.BAD_REQUEST, message)
 class EndTimeIsEarlierThanStartTimeException(message: String?): ResponseStatusException(HttpStatus.BAD_REQUEST, message)
-
+class OverLappingScreeningsException(message: String?): ResponseStatusException(HttpStatus.BAD_REQUEST, message)

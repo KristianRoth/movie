@@ -12,13 +12,12 @@ import org.springframework.http.ResponseEntity
 class AuditoriumController @Autowired constructor(
      private val movieService: MovieService
 ) {
-     @GetMapping("/make")
+     @GetMapping("/make", produces = ["application("])
      fun make(
           @RequestParam(value = "auditoriumName", required = true) auditoriumName: String,
           @RequestParam(value = "numberOfSeats", required = true) numberOfSeats: Int
      ): ResponseEntity<Auditorium> {
           return ResponseEntity.ok(movieService.createAuditorium(auditoriumName, numberOfSeats))
-          
      }
 
      @GetMapping("/{auditoriumId}", produces = ["application/json"])
