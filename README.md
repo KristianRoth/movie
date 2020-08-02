@@ -2,10 +2,10 @@
 
 ### Devaus ympäristön asennus
 ```bash
-docker-compose build
 docker-compose up 
 ```
-Palvelu vastaa osoitteesta `localhost:8080`
+Palvelu vastaa osoitteesta `localhost:8080`  
+Tietokantaa pystyy katsomaan `localhost:8081`
 
 ### Rajapinnan kuvaus
 
@@ -25,3 +25,4 @@ Palvelu vastaa osoitteesta `localhost:8080`
 
 #### Huomioita
 Kaikki ajat käyttävät ISO DATE_TIME formattia `2020-07-30T14:30:00.000000`
+
