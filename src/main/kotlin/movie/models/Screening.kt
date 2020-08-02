@@ -39,6 +39,10 @@ class Screening(
         resevations += resevation
     }
 
+    fun addResevations(resevations: List<Resevation>) {
+        resevations.forEach { addResevation(it) }
+    }
+
 }
 
 @Entity

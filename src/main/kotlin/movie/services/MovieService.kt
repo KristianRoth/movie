@@ -121,12 +121,11 @@ class MovieService @Autowired constructor (
             }
         }
 
-        return seats.map { seat ->
-            val resevation = Resevation(screening, seat)
-            screening.addResevation(resevation)
-            resevationRepository.save(resevation)
-            resevation
-        }
+        val resevations = seats.map { seat -> Resevation(screening, seat) }
+        screening.addResevations(resevations)
+        resevationRepository.saveAll(resevations)
+
+        return resevations
 
     }
 
