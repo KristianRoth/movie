@@ -15,14 +15,12 @@ class MovieService @Autowired constructor (
     private val screeningRepository: ScreeningRepository,
     private val resevationRepository: ResevationRepository
 ) {
-
     fun getAuditoriums(): List<Auditorium> {
         return auditoriumRepository.findAll()
     }
 
     fun createAuditorium(name: String, numberOfSeats: Int): Auditorium {
         val auditorium = Auditorium(name)
-
         auditorium.addSeats(numberOfSeats)
         auditoriumRepository.save(auditorium)
         return auditorium
@@ -38,7 +36,6 @@ class MovieService @Autowired constructor (
         val auditorium: Auditorium = auditoriumRepository
                         .findById(auditoriumId)
                         .orElseThrow{ NotFoundException("Auditorium with id ${auditoriumId} not found") }
-
         return auditorium.seats
     }
 
@@ -126,7 +123,6 @@ class MovieService @Autowired constructor (
         resevationRepository.saveAll(resevations)
 
         return resevations
-
     }
 
     fun getResevations(screeningId: Int): List<Resevation> {

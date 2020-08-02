@@ -21,7 +21,6 @@ class Screening(
     )
     val auditorium: Auditorium
 ) {
-
     @JsonBackReference
     @OneToMany(
         name = "resevation_id",
@@ -34,7 +33,6 @@ class Screening(
     @GeneratedValue(stretegy = GenerationType.AUTO)
     val id: Int = 0
 
-
     fun addResevation(resevation: Resevation) {
         resevations += resevation
     }
@@ -42,7 +40,6 @@ class Screening(
     fun addResevations(resevations: List<Resevation>) {
         resevations.forEach { addResevation(it) }
     }
-
 }
 
 @Entity

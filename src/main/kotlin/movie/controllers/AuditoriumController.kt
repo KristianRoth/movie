@@ -6,13 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.ResponseEntity
 
-
 @RestController
 @RequestMapping("/api/auditoriums")
 class AuditoriumController @Autowired constructor(
      private val movieService: MovieService
 ) {
-
      @GetMapping("", produces = ["application/json"])
      fun getAuditoriums(): ResponseEntity<List<Auditorium>> {
           return ResponseEntity.ok(movieService.getAuditoriums())

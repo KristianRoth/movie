@@ -8,13 +8,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
 
-
 @RestController
 @RequestMapping("/api/screenings")
 class ScreeningController @Autowired constructor(
      private val movieService: MovieService
 ) {
-
     @GetMapping("", produces = ["application/json"])
     fun getScreenings(
         @RequestParam(value = "startTime", required = false)

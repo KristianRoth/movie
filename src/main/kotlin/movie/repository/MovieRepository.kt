@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
  
-
 @Repository
 interface AuditoriumRepository: JpaRepository<Auditorium, Int> {
     fun findByName(name: String): Auditorium?
@@ -27,7 +26,7 @@ interface ScreeningRepository: JpaRepository<Screening, Int> {
 
     @Query("""SELECT s FROM Screening s 
             WHERE s.auditorium = :auditorium
-            AND (:startTime < s.endTime) and (:endTime > s.startTime)""")
+            AND (:startTime < s.endTime) AND (:endTime > s.startTime)""")
     fun findOverlappingScreenings(
         @Param("auditorium") auditorium: Auditorium,
         @Param("startTime") startTime: LocalDateTime,

@@ -5,13 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 
-
 @Entity
 @Table(name = "auditoriums")
 class Auditorium(
     val name: String
 ) {
-
     @Id
     @GeneratedValue(stretegy = GenerationType.AUTO)
     val id: Int = 0
@@ -26,10 +24,7 @@ class Auditorium(
     fun addSeats(amount: Int) {
         for (i in 1..amount ) seats += Seat(i, this)
     } 
-
 }
-
-
 
 @Entity
 @Table(name = "seats")
@@ -45,5 +40,4 @@ class Seat(
     @Id
     @GeneratedValue(stretegy = GenerationType.AUTO)
     val id: Int = 0
-
 }
